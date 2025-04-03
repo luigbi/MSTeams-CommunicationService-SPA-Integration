@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- import fontAwsome from cdn -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+      integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!-- <title>Azure Communication Services - Teams Calling Web Application</title> -->
+  </head>
+
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+    .is-speaking {
+      border: 10px solid #5b5fc7;
+      padding: 10px ;
+    }
+    .bounce {
+    animation: bounce 2s infinite;
+    }
+    body {
+      /* background-color: tomato; */
+    }
+    .nowConnecting {
+      font-size: 2em;
+      font-family: "Open Sans", sans-serif;
+      padding-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .profile-pic {
+      width: 50%;
+      height: 50%;
+      border-radius: 50%;
+    }
+    .hold-icon {
+      /* width: 100%;
+      height: 100%; */
+      font-family: "Open Sans", sans-serif;
+      font-size: 2em;
+      /* padding-top: 300px; */
+    }
+    .hold-icon-span {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 20px;
+    }
+    .hidden {
+      /* visibility: hidden; */
+      display: none;
+    }
+
+    #localVideoContainer {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: #ffffff;
+      height: 100px;
+      z-index: 2;
+     overflow: hidden;
+    }
+    
+    #localVideoContainer > div {
+      margin-left: -50%;
+    }
+
+    #remoteVideoContainer {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: auto;
+      height: auto;
+      margin: 5px;
+      overflow: hidden;
+    }
+    
+    #remoteVideoContainer > div {
+      margin-left: -50%;
+    }
+    
+    .centered-container {
+      /*position: absolute; /*  was relative */
+      width: 100%;
+      height: 100%;/* 100vh; /* Make container cover the viewport */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .lower-img-position {
+      position: absolute;
+      top: 10;
+    }
+
+    .centered-span {
+      position: absolute;
+      /* top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); */
+      display: flex;
+      justify-content: center;
+      /* align-items: center; */
+      width: 100%;
+      max-width: 500px;
+      flex-direction: column;
+    }
+
+    .centered-span-now-connecting {
+      position: absolute;
+      /* top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .centered-span-profile-pic {
+      position: absolute;
+      /* top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .centered-pause {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+
+    @keyframes bounce {
+  0%, 100% {
+    transform: scale(1); /* Start and end position */
+  }
+  50% {
+    transform: scale(1.05); /* Midway position, slightly above the original position */
+  }
+}
+
+/* .hold-icon {
+  animation: bounce 2s infinite; /* Adjust the duration (2s) and iteration count (infinite) as needed
+} */
+
+span.centered-span.nowConnecting.hidden {
+    display: none;
+}
+  </style>
+  <body>
+    <!-- <h4 class="hidden">Azure Communication Services - Teams Calling Web Application</h4> -->
+    <!-- <input id="user-access-token"
+            type="text"
+            placeholder="User access token"
+            style="margin-bottom:1em; width: 500px;"/>
+        <button id="initialize-teams-call-agent" type="button">Login</button> -->
+    <br />
+    <br />
+    <!-- <input class="hidden" 
+        id="callee-teams-user-id"
+            type="text"
+            placeholder="Enter your Microsoft Teams email (e.g., example@example.com)"
+            style="margin-bottom:1em; width: 500px; display: block;"/>
+        <button class="hidden" id="start-call-button" type="button" >Start Call</button>
+        <button class="hidden" id="hangup-call-button" type="button" disabled="true">Hang up Call</button>
+        <button class="hidden" id="accept-call-button" type="button" disabled="true">Accept Call</button>
+        <button class="hidden" id="start-video-button" type="button" disabled="true">Start Video</button>
+        <button class="hidden" id="stop-video-button" type="button" disabled="true">Stop Video</button> -->
+    <br />
+    <br />
+    <!-- <div id="connectedLabel" style="color: #13bb13;" hidden>Call is connected!</div> -->
+    <br />
+
+    <div class="centered-container">
+      <span class="centered-span">
+        <span class="nowConnecting bounce"></span>
+      <span class="hold-icon-span hidden">
+        <div class="hold-icon hidden">
+          On Hold
+        </div>
+      </span>
+      <span class="participant-no-camera-span"style="
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  ">
+        <img
+          class="profile-pic participant-no-camera"
+          src="/assets/default-profile-pic.png"
+          alt="default-profile-pic"
+        />
+      </span>
+      </span>
+      
+    </div>
+
+    <div id="remoteVideoContainer" hidden>
+      <!-- Remote participants' video streams: -->
+    </div>
+    <br />
+    <div id="localVideoContainer" style="width: 30%" hidden>
+      <!-- Local video stream: -->
+    </div>
+    <script src="bundle.js"></script>
+  </body>
+</html>
