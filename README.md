@@ -1,218 +1,190 @@
-# Teams-Auth-SPA-PSTN
+# VirtualFront: Seamless Communication with Microsoft Teams via Azure Communication Services (ACS)
 
-## Overview
+VirtualFront is a production-grade Single Page Application (SPA) that integrates Microsoft Teams and Azure Communication Services (ACS) to enable video calling, PSTN integration, and secure authentication via Azure Active Directory (AAD). This repository contains the source code and setup instructions to get started.
 
-The **Teams-Auth-SPA-PSTN** project is a Single Page Application (SPA) designed to integrate with Microsoft Teams and Azure Communication Services (ACS). It enables users to make and receive video calls, authenticate using Azure Active Directory (AAD), and interact with Public Switched Telephone Network (PSTN) services. This project demonstrates how to leverage Azure Communication Services and Microsoft Teams APIs to build a seamless communication experience.
+---
 
-## Features
+## 🚀 Features
 
-- **Video Calling**: Supports 1:1 video calls using Azure Communication Services.
-- **PSTN Integration**: Allows users to make calls to phone numbers via PSTN.
-- **Authentication**: Uses Azure Active Directory (AAD) for secure user authentication.
-- **Dynamic Configuration**: Fetches environment-specific configurations dynamically.
-- **Error Logging**: Logs errors to a centralized endpoint for debugging and monitoring.
+- One-click video calls to Microsoft Teams users.
+- Token exchange using Azure AD and ACS.
+- PSTN calling support (dialing out to phone numbers).
+- Scalable backend built with Node.js and Express.
+- Frontend powered by Vanilla JavaScript and ACS SDK.
 
-## Project Structure
+---
 
-The project is organized into the following directories and files:
+## 📂 Project Structure
 
-```
+```plaintext
 .
-├── client/
-│   ├── app.js               # Frontend logic for video calling and UI interactions
-│   ├── index.html           # Main HTML file for the SPA
-├── constants/
-│   ├── env.js               # Environment variables loaded from .env
-│   ├── index.js             # Application-wide constants
-├── controllers/
-│   ├── auth.controller.js   # Handles authentication-related API logic
-│   ├── client.controller.js # Serves the SPA homepage
-├── public/
-│   ├── assets/              # Static assets (e.g., images)
-├── routes/
-│   ├── client.route.js      # Route for serving the SPA
-│   ├── getAccessToken.route.js # Route for fetching access tokens
-│   ├── getPSTNToken.route.js   # Route for fetching PSTN tokens
-│   ├── getRestAPIEndpoint.route.js # Route for fetching REST API endpoint
-├── services/
-│   ├── auth.services.js     # Core logic for interacting with Azure services
-├── utils/
-│   ├── helper.utils.js      # Utility functions for environment and endpoint management
-├── .env                     # Environment variables
-├── index.js                 # Main server entry point
-├── webpack.config.js        # Webpack configuration for bundling
-├── package.json             # Project dependencies and scripts
+├── client/                      # Frontend SPA (HTML, JS, CSS)
+│   ├── assets/                  # Static assets (images, styles)
+│   ├── app.js                   # Main application logic
+│   └── call.js                  # ACS call logic
+│
+├── constants/                   # Common constants (enums, labels)
+│   └── roles.js
+│
+├── controllers/                 # Express route controllers
+│   ├── token.controller.js      # Token management (ACS, AAD)
+│   ├── user.controller.js       # Teams users & endpoint APIs
+│   └── pstn.controller.js       # PSTN token and phone services
+│
+├── public/                      # Static public directory
+│   └── index.html
+│
+├── routes/                      # API route definitions
+│   ├── token.routes.js
+│   ├── user.routes.js
+│   └── pstn.routes.js
+│
+├── services/                    # Service layer for Azure SDK calls
+│   ├── acs.service.js
+│   ├── auth.service.js
+│   └── teams.service.js
+│
+├── utils/                       # Utility helpers
+│   ├── logger.js
+│   └── environment.js
+│
+├── .env                         # Environment variables
+├── index.js                     # Express server entry
+├── package.json                 # Node dependencies
+├── webpack.config.js            # Frontend bundling
+└── README.md                    # Project documentation
 ```
 
-## Key Components
+---
 
-### 1. **Frontend (client/app.js)**
+## 🛠️ Setup Instructions
 
-The frontend is built using vanilla JavaScript and integrates with Azure Communication Services SDK. It handles:
+Follow these steps to set up and run the project locally.
 
-- Initializing the Teams Call Agent.
-- Managing video streams (local and remote).
-- Handling UI events such as starting or ending calls.
+### 1. Prerequisites
 
-### 2. **Backend (index.js)**
+- **Node.js** (v16 or higher)
+- **npm** (v7 or higher)
+- **Azure Subscription** with:
+  - Azure Communication Services (ACS) resource.
+  - Azure Active Directory (AAD) App Registration.
+- **Microsoft Teams** account.
 
-The backend is built using Node.js and Express. It provides APIs for:
+---
 
-- Fetching access tokens for Teams and PSTN.
-- Validating Application tokens.
-- Serving the SPA and static assets.
+### 2. Clone the Repository
 
-### 3. **Authentication**
+```bash
+git clone https://github.com/your-username/VirtualFront.git
+cd VirtualFront
+```
 
-The project uses Azure AD for authentication. The `auth.services.js` file contains logic for:
+---
 
-- Fetching access tokens for Teams users.
-- Validating Application tokens via REST API.
-- Fetching PSTN tokens for phone calls.
+### 3. Install Dependencies
 
-### 4. **Dynamic Configuration**
+Run the following command to install the required Node.js dependencies:
 
-The `utils/helper.utils.js` file dynamically determines the environment (e.g., dev, qa, prod) and fetches the appropriate REST API endpoint.
+```bash
+npm install
+```
 
-### 5. **Error Logging**
+---
 
-Errors are logged to a centralized endpoint using the `LogError` function in `client/app.js`. This ensures that issues can be monitored and resolved efficiently.
+### 4. Configure Environment Variables
 
-## Installation and Setup
+Create a .env file in the root directory and add the following variables:
 
-### Prerequisites
+```ini
+# Azure Communication Services
+ACS_CONNECTION_STRING=endpoint=https://<your-acs-resource>.communication.azure.com/;accesskey=<your-access-key>
 
-- Node.js (v16 or higher)
-- Azure Communication Services resource
-- Azure Active Directory (AAD) app registration
+# Azure Active Directory
+AAD_CLIENT_ID=<your-client-id>
+AAD_TENANT_ID=<your-tenant-id>
+AAD_SECRET=<your-client-secret>
 
-### Steps
+# Microsoft Teams User
+TEAMS_USER_ID=<your-teams-user-id>
+```
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd Teams-Auth-SPA-PSTN
-   ```
+---
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+### 5. Run the Application
 
-3. Configure environment variables in `.env`:
-   ```env
-   SERVER_PORT=3000
-   NODE_ENV=dev
-   COMMUNICATION_SERVICES_CONNECTION_STRING=<your-acs-connection-string>
-   AAD_CLIENT_ID=<your-aad-client-id>
-   AAD_TENANT_ID=<your-aad-tenant-id>
-   AAD_CLIENT_SECRET=<your-aad-client-secret>
-   ```
+Start the development server:
 
-4. Start the development server:
-   ```bash
-   npm start
-   ```
+```bash
+npm start
+```
 
-5. Open the application in your browser:
-   ```
-   http://localhost:3000
-   ```
+The application will be available at `http://localhost:3000`.
 
-## API Endpoints
+---
 
-### 1. `/get-access-token` (POST)
-Fetches an access token for Teams users.
+### 6. Build for Production
 
-- **Request Body**:
-  ```json
-  {
-    "email": "user@example.com",
-    "token": "application-token",
-    "did": "directory-id",
-    "cid": "client-id"
-  }
-  ```
+To build the frontend for production, run:
 
-- **Response**:
-  ```json
-  {
-    "accessTokenData": "<access-token>",
-    "userInfo": "<user-info>",
-    "timeTaken": {
-      "validateApplicationToken": 100,
-      "getAccessToken": 200,
-      "getUserInfo": 300,
-      "totalTime": 600
-    }
-  }
-  ```
+```bash
+npm run build
+```
 
-### 2. `/get-pstn-token` (POST)
+The bundled files will be available in the `dist/` directory.
+
+---
+
+## 🔧 Deployment
+
+### Deploy to Azure App Service
+
+1. Create an **Azure App Service** instance.
+2. Push the code to the App Service using Git or Azure CLI.
+3. Set the environment variables in the App Service configuration.
+
+### Deploy Static Frontend to Azure Blob Storage
+
+1. Build the frontend using `npm run build`.
+2. Upload the contents of the `dist/` directory to an Azure Blob Storage container with static website hosting enabled.
+
+---
+
+## 🔖 API Endpoints
+
+### `POST /get-access-token`
+Fetches an ACS token for Teams users.
+
+### `POST /get-pstn-token`
 Fetches a PSTN token for phone calls.
 
-- **Request Body**:
-  ```json
-  {
-    "token": "application-token",
-    "did": "directory-id",
-    "cid": "client-id"
-  }
-  ```
-
-- **Response**:
-  ```json
-  {
-    "pstnToken": "<pstn-token>",
-    "communicationServicesPhoneNumber": "+1234567890",
-    "timeTaken": {
-      "validateApplicationToken": 100,
-      "getAccessTokenForPSTN": 200,
-      "totalTime": 300
-    }
-  }
-  ```
-
-### 3. `/endpoint` (GET)
+### `GET /endpoint`
 Fetches the REST API endpoint for the current environment.
 
-- **Response**:
-  ```json
-  {
-    "endpoint": "https://avm-restapi-dev.azurewebsites.net"
-  }
-  ```
+---
 
-## Technologies Used
-
-- **Frontend**: Vanilla JavaScript, Azure Communication Services SDK
-- **Backend**: Node.js, Express
-- **Authentication**: Azure Active Directory (AAD)
-- **Build Tool**: Webpack
-- **HTTP Client**: Axios
-
-## Future Enhancements
-
-- Add unit tests for backend and frontend components.
-- Implement a CI/CD pipeline for automated deployments.
-- Enhance error handling and logging mechanisms.
-- Add support for group calls and chat features.
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Commit your changes and push them to your fork.
-4. Submit a pull request with a detailed description of your changes.
-
-## License
-
-This project is licensed under the [ISC License](https://opensource.org/licenses/ISC).
-
-## References
+## 📚 References
 
 - [Azure Communication Services Documentation](https://learn.microsoft.com/en-us/azure/communication-services/)
-- [Azure Active Directory Documentation](https://learn.microsoft.com/en-us/azure/active-directory/)
-- [Webpack Documentation](https://webpack.js.org/)
+- [Microsoft Teams Developer Platform](https://learn.microsoft.com/en-us/microsoftteams/platform/)
+- [Azure Active Directory App Integration](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request.
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+---
+
+## 🗓️ Future Enhancements
+
+- Add support for group calls and chat features.
+- Implement a CI/CD pipeline for automated deployments.
+- Enhance error handling and logging mechanisms.
+- Add an admin panel for managing Teams users.
