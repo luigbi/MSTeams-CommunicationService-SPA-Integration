@@ -75,7 +75,7 @@ Follow these steps to set up and run the project locally.
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/VirtualFront.git
+git clone https://github.com/luigbi/MSTeams-CommunicationService-SPA-Integration.git
 cd VirtualFront
 ```
 
